@@ -9,31 +9,41 @@ public class ImageDownload {
 
 	private String downloadFromAddress;
 	private String saveToAddress;
+	private int failedAttempts;
+	private int sleepDuration;
 	
 	ImageDownload(String downloadAddress, String saveAddress) {
 		this.downloadFromAddress = downloadAddress;
 		this.saveToAddress = saveAddress;
+		failedAttempts = 0;
+		sleepDuration = 100;
 	}
 	
 	public void start() {
 		
-		Path saveToPath = Paths.get(saveToAddress);
-		
-		try(InputStream in = new URL(downloadFromAddress).openStream()){
-			Thread.sleep(100);
-			Path dir = Paths.get("C:/mascot_images");
-			Files.createDirectories(dir);
+		if(this.failedAttempts < 4) {
+			Path saveToPath = Paths.get(saveToAddress);
 			
-		    Files.copy(in, saveToPath);
-		    System.out.print(".");
-		    
-		} catch (IOException e) {
+			try(InputStream in = new URL(downloadFromAddress).openStream()){
+				Thread.sleep(sleepDuration);
+				Path dir = Paths.get("C:/mascot_images");
+				Files.createDirectories(dir);
+				
+			    Files.copy(in, saveToPath);
+			    System.out.print(".");
+			    
+			} catch (IOException e) {
+				this.sleepDuration += 1000;
+				this.failedAttempts++;
+				System.out.print("|" + this.sleepDuration + "ms|");
+				this.start();
+			} catch (InterruptedException e) {
+				System.out.println("");
+				System.out.println("Error getting: " + downloadFromAddress);
+			}
+		} else {
 			System.out.println("");
-			System.out.println("Error getting: " + downloadFromAddress);
-		} catch (InterruptedException e) {
-			System.out.println("");
-			System.out.println("Error getting: " + downloadFromAddress);
+			System.out.println("Error getting: " + downloadFromAddress);			
 		}
-		
 	}
 }
