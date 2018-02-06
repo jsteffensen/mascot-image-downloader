@@ -35,15 +35,15 @@ public class ImageDownload {
 			} catch (IOException e) {
 				this.sleepDuration += 1000;
 				this.failedAttempts++;
-				System.out.print("|" + this.sleepDuration + "ms|");
 				this.start();
 			} catch (InterruptedException e) {
-				System.out.println("");
-				System.out.println("Error getting: " + downloadFromAddress);
+				this.sleepDuration += 1000;
+				this.failedAttempts++;
+				this.start();
 			}
 		} else {
 			System.out.println("");
-			System.out.println("Error getting: " + downloadFromAddress);			
+			System.out.println(downloadFromAddress);			
 		}
 	}
 }

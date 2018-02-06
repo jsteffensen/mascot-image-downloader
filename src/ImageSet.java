@@ -28,6 +28,7 @@ public class ImageSet {
 				    	  csvFileLines.add(lines[0] + ";" + lines[3]);
 				    	});
 				} catch (IOException e) {
+					System.out.println( "--" );
 				  e.printStackTrace();
 				}
 		} else {
